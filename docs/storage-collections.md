@@ -77,6 +77,10 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 ### Conditional writes
 
 When records are successfully stored a version is returned which can be used with further updates to perform concurrent modification checks with the next write. This is often known as a conditional write.
@@ -121,6 +125,10 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 We support another kind of conditional write which is used to write a record only if none already exists for that record's key name.
 
 ```csharp fct_label="Unity"
@@ -159,6 +167,10 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
     return err;
   }
 });
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 ## Fetch records
@@ -214,6 +226,10 @@ deferred.addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRec
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 ## List records
 
 You can list records in a collection and page through results. The records returned can be filter to those owned by the user or `"null"` for public records which aren't owned by a user.
@@ -264,6 +280,10 @@ deferred.addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRec
     return err;
   }
 });
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 ## Update records
@@ -346,6 +366,10 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 ## Remove records
 
 A user can remove a record if it has the correct permissions and they own it.
@@ -384,6 +408,10 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 You can also conditionally remove an object if the object version matches the version sent by the client.
 
 ```csharp fct_label="Unity"
@@ -419,4 +447,8 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
     return err;
   }
 });
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```

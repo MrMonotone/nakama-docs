@@ -25,6 +25,16 @@ Client client = DefaultClient.builder("defaultkey")
 Client client = DefaultClient.defaults("defaultkey");
 ```
 
+```swift fct_label="Swift"
+let client : Client = Builder("defaultkey")
+    .host("127.0.0.1")
+    .port(7350)
+    .ssl(false)
+    .build()
+// or same as above.
+let client : Client = Builder.defaults(serverKey: "defaultkey")
+```
+
 Every user account is created from one of the [options used to register](#register-or-login). We call each of these options a "link" because it's a way to access the user's account. You can add more than one link to each account which is useful to enable users to login in multiple ways across different devices.
 
 ## Register or login
@@ -103,6 +113,10 @@ deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 In games it is often a better option to use [Google](#google) or [Game Center](#game-center) to unobtrusively register the user.
 
 ### Email
@@ -144,6 +158,10 @@ deferred.addCallback(new Callback<Session, Session>() {
   }
 });
 // Use client.login(...) after register.
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 ### Social providers
@@ -252,6 +270,10 @@ deferred.addCallback(new Callback<Session, Session>() {
 // Use client.login(...) after register.
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 #### Game Center
 
 Apple devices have builtin authentication which can be done without user interaction through Game Center. The register or login process is a little complicated because of how Apple's services work.
@@ -283,6 +305,10 @@ client.Register(message, (INSession session) => {
 
 ```java fct_label="Android/Java"
 // Not applicable with Android.
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 #### Steam
@@ -323,6 +349,10 @@ deferred.addCallback(new Callback<Session, Session>() {
   }
 });
 // Use client.login(...) after register.
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 ### Custom
@@ -366,6 +396,10 @@ deferred.addCallback(new Callback<Session, Session>() {
 // Use client.login(...) after register.
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 ## Sessions
 
 The register and login messages return a session on success. The session contains the current user's ID and handle as well as information on when it was created and when it expires.
@@ -407,6 +441,10 @@ deferred.addCallback(new Callback<Session, Session>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 ### Connect
 
 With a session you can connect with the server and send messages. Most of our clients do not auto-reconnect for you so you should handle it with your own code.
@@ -430,6 +468,10 @@ deferred.addCallback(new Callback<Session, Session>() {
     return session;
   }
 });
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 ## Link or unlink
@@ -469,6 +511,10 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 });
 ```
 
+```swift fct_label="Swift"
+// Needs example.
+```
+
 You can unlink any linked login options for the current user.
 
 ```csharp fct_label="Unity"
@@ -500,6 +546,10 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
     return err;
   }
 });
+```
+
+```swift fct_label="Swift"
+// Needs example.
 ```
 
 Like with register and login you can link or unlink many different account options.
