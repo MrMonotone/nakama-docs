@@ -115,9 +115,10 @@ deferred.addCallback(new Callback<ResultSet<User>, ResultSet<User>>() {
 ```
 
 ```swift fct_label="Swift"
+let userID = UUID() // a User ID
+
 var message = UsersFetchMessage()
-message.handles.append(self.session!.handle)
-message.userIDs.append(self.session!.userID)
+message.userIDs.append(userID)
 
 client.send(message: message).then { users in
   for user in users {
