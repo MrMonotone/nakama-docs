@@ -114,7 +114,30 @@ deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let defaults = UserDefaults.standard
+let deviceKey = "device_id"
+
+var deviceId : String? = NakamaSessionManager.defaults.string(forKey: deviceKey)
+if deviceId == nil {
+  deviceId = UIDevice.current.identifierForVendor!.uuidString
+  NakamaSessionManager.defaults.set(deviceId!, forKey: deviceKey)
+}
+
+let message = AuthenticateMessage(device: deviceId!)
+client.login(with: message).then { session in
+  print("Login successful")
+}.catch{ err in
+  if (err is NakamaError) {
+    switch err as! NakamaError {
+    case .userNotFound(_):
+      let _ = self.client.register(with: message)
+      return
+    default:
+      break
+    }
+  }
+  print("Could not login: %@", err)
+}
 ```
 
 In games it is often a better option to use [Google](#google) or [Game Center](#game-center) to unobtrusively register the user.
@@ -161,7 +184,16 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let email = "email@example.com"
+let password = "3bc8f72e95a9"
+
+let message = AuthenticateMessage(email: email, password: password);
+client.register(with: message).then { session in
+  print("Successfully registered")
+}.catch { err in
+  print("Error registering: %@", err);
+}
+// Use client.login(...) after register.
 ```
 
 ### Social providers
@@ -271,7 +303,14 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let oauthToken = "...."
+
+let message = AuthenticateMessage(google: oauthToken);
+client.register(with: message).then{ session in
+  print("Successfully registered")
+}.catch { err in
+  print("Error registering: %@", err);
+}
 ```
 
 #### Game Center
@@ -308,7 +347,20 @@ client.Register(message, (INSession session) => {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let playerID : String = "..."
+let bundleID : String = "..."
+let base64salt : String = "..."
+let base64signature : String = "..."
+let publicKeyURL : String = "..."
+let timestamp : Int = 0
+
+let message = AuthenticateMessage(gamecenter: bundleID, playerID: playerID, publicKeyURL: publicKeyURL, salt: base64salt, timestamp: timestamp, signature: base64signature)
+client.register(with: message).then { session in
+  print("Successfully registered")
+}, (INError err) => {
+  print("Error registering: %@", err);
+});
+// Use client.login(...) after register.
 ```
 
 #### Steam
@@ -352,7 +404,14 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let sessionToken = "..."
+
+let message = AuthenticateMessage(steam: sessionToken)
+client.register(with: message).then { session in
+  print("Successfully registered")
+}.catch { err in
+  print("Error registering: %@", err);
+}
 ```
 
 ### Custom
@@ -397,7 +456,15 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+// Some id from another service.
+let customID = "a1fca336-7191-11e7-bdab-df34f6f90285"
+
+let message = AuthenticateMessage(custom: customID)
+client.register(with: message).then { session in
+  print("Successfully registered")
+}.catch { err in
+  print("Error registering: %@", err);
+}
 ```
 
 ## Sessions
@@ -442,7 +509,14 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let id = "3e70fd52-7192-11e7-9766-cb3ce5609916";
+let message = AuthenticateMessage(device: id)
+client.login(with: message).then { session in
+  print("Session id '{0}' handle '{1}'.", session.userID.uuidString, session.handle);
+  print("Session expired: {0}", session.isExpired(currentTimeSince1970: Date().timeIntervalSince1970));
+}.catch { err in
+  print("Error login in: %@", err);
+}
 ```
 
 ### Connect
@@ -471,7 +545,10 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let session : Session = ... // obtained from register or login.
+client.connect(with: session).then { _ in
+  print("Successfully connected.")
+});
 ```
 
 ## Link or unlink
@@ -512,7 +589,14 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let id = "062b0916-7196-11e7-8371-9fcee9f0b20c"
+
+var message = SelfLinkMessage(device: id);
+client.send(with: message).then{
+  print("Successfully linked device ID to current user.")
+}.catch { err in
+  print("Error linking: %@", err);
+}
 ```
 
 You can unlink any linked login options for the current user.
@@ -549,7 +633,14 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let id = "062b0916-7196-11e7-8371-9fcee9f0b20c"
+
+var message = SelfUnlinkMessage(device: id);
+client.send(with: message).then{
+  print("Successfully unlinked device ID from current user.")
+}.catch { err in
+  print("Error unlinking: %@", err);
+}
 ```
 
 Like with register and login you can link or unlink many different account options.
