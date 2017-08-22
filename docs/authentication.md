@@ -189,9 +189,9 @@ let password = "3bc8f72e95a9"
 
 let message = AuthenticateMessage(email: email, password: password);
 client.register(with: message).then { session in
-  print("Successfully registered")
+  NSLog("Session: @%", session.token)
 }.catch { err in
-  print("Error registering: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
 // Use client.login(...) after register.
 ```
@@ -303,13 +303,13 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-let oauthToken = "...."
+let oauthToken = "..."
 
 let message = AuthenticateMessage(google: oauthToken);
-client.register(with: message).then{ session in
-  print("Successfully registered")
+client.register(with: message).then { session in
+  NSLog("Session: @%", session.token)
 }.catch { err in
-  print("Error registering: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
 ```
 
@@ -354,12 +354,14 @@ let base64signature : String = "..."
 let publicKeyURL : String = "..."
 let timestamp : Int = 0
 
-let message = AuthenticateMessage(gamecenter: bundleID, playerID: playerID, publicKeyURL: publicKeyURL, salt: base64salt, timestamp: timestamp, signature: base64signature)
+let message = AuthenticateMessage(
+    gamecenter: bundleID, playerID: playerID, publicKeyURL: publicKeyURL,
+    salt: base64salt, timestamp: timestamp, signature: base64signature)
 client.register(with: message).then { session in
-  print("Successfully registered")
-}, (INError err) => {
-  print("Error registering: %@", err);
-});
+  NSLog("Session: @%", session.token)
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 // Use client.login(...) after register.
 ```
 
@@ -408,10 +410,11 @@ let sessionToken = "..."
 
 let message = AuthenticateMessage(steam: sessionToken)
 client.register(with: message).then { session in
-  print("Successfully registered")
+  NSLog("Session: @%", session.token)
 }.catch { err in
-  print("Error registering: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
+// Use client.login(...) after register.
 ```
 
 ### Custom
@@ -461,10 +464,11 @@ let customID = "a1fca336-7191-11e7-bdab-df34f6f90285"
 
 let message = AuthenticateMessage(custom: customID)
 client.register(with: message).then { session in
-  print("Successfully registered")
+  NSLog("Session: @%", session.token)
 }.catch { err in
-  print("Error registering: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
+// Use client.login(...) after register.
 ```
 
 ## Sessions
@@ -509,13 +513,14 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-let id = "3e70fd52-7192-11e7-9766-cb3ce5609916";
+let id = "3e70fd52-7192-11e7-9766-cb3ce5609916"
 let message = AuthenticateMessage(device: id)
 client.login(with: message).then { session in
-  print("Session id '{0}' handle '{1}'.", session.userID.uuidString, session.handle);
-  print("Session expired: {0}", session.isExpired(currentTimeSince1970: Date().timeIntervalSince1970));
+  let expired = session.isExpired(currentTimeSince1970: Date().timeIntervalSince1970)
+  NSLog("Session id '@%' handle '@%'.", session.userID.uuidString, session.handle)
+  NSLog("Session expired: '@%'", expired)
 }.catch { err in
-  print("Error login in: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
 ```
 
@@ -545,9 +550,9 @@ deferred.addCallback(new Callback<Session, Session>() {
 ```
 
 ```swift fct_label="Swift"
-let session : Session = ... // obtained from register or login.
+let session : Session = someSession // obtained from register or login.
 client.connect(with: session).then { _ in
-  print("Successfully connected.")
+  NSLog("Successfully connected.")
 });
 ```
 
@@ -592,10 +597,10 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 let id = "062b0916-7196-11e7-8371-9fcee9f0b20c"
 
 var message = SelfLinkMessage(device: id);
-client.send(with: message).then{
-  print("Successfully linked device ID to current user.")
+client.send(with: message).then {
+  NSLog("Successfully linked device ID to current user.")
 }.catch { err in
-  print("Error linking: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
 ```
 
@@ -636,10 +641,10 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 let id = "062b0916-7196-11e7-8371-9fcee9f0b20c"
 
 var message = SelfUnlinkMessage(device: id);
-client.send(with: message).then{
-  print("Successfully unlinked device ID from current user.")
+client.send(with: message).then {
+  NSLog("Successfully unlinked device ID from current user.")
 }.catch { err in
-  print("Error unlinking: %@", err);
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
 }
 ```
 

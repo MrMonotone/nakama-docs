@@ -78,7 +78,20 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let saveGame = "{\"progress\": 50}".data(using: .utf8)!
+let myStats = "{\"skill\": 24}".data(using: .utf8)!
+
+let bucket = "myapp"
+var message = StorageWriteMessage()
+message.write(bucket: bucket, collection: "saves", key: "savegame", value: saveGame)
+message.write(bucket: bucket, collection: "saves", key: "mystats", value: myStats)
+client.send(message: message).then { list in
+  for recordId in list {
+    NSLog("Stored record has version '@%'", recordId.version)
+  }
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 ### Conditional writes
@@ -126,7 +139,16 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let saveGame = "{\"progress\": 54}".data(using: .utf8)!
+var version = record.version // a StorageRecordId object's version.
+
+var message = StorageWriteMessage()
+message.write(bucket: "myapp", collection: "saves", key: "savegame", value: saveGame, version: version)
+client.send(message: message).then { list in
+  version = list[0].version // Cache updated version for next write.
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 We support another kind of conditional write which is used to write a record only if none already exists for that record's key name.
@@ -146,7 +168,7 @@ client.Send(message, (INResultSet<INStorageKey> list) => {
 ```
 
 ```java fct_label="Android/Java"
-byte[] saveGame = "{\"progress\": 54}".getBytes();
+byte[] saveGame = "{\"progress\": 1}".getBytes();
 byte[] version = "*".getBytes(); // represents "no version".
 
 CollatedMessage<ResultSet<RecordId>> message = StorageWriteMessage.Builder.newBuilder()
@@ -170,7 +192,16 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let saveGame = "{\"progress\": 1}".data(using: .utf8)!
+var version = "*".data(using: .utf8)! // represents "no version".
+
+var message = StorageWriteMessage()
+message.write(bucket: "myapp", collection: "saves", key: "savegame", value: saveGame, version: version)
+client.send(message: message).then { list in
+  version = list[0].version // Cache updated version for next write.
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 ## Fetch records
@@ -227,7 +258,20 @@ deferred.addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRec
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let userId = session.userID // a Session object's Id.
+
+var message = StorageFetchMessage()
+message.fetch(bucket: "myapp", collection: "saves", key: "savegame", userID: userId)
+message.fetch(bucket: "myapp", collection: "configuration", key: "config", userID: nil)
+client.send(message: message).then { list in
+  for record in list {
+    NSLog("Record value '@%'", record.value)
+    NSLog("Record permissions read '@%' write '@%'",
+        record.permissionRead, record.permissionWrite)
+  }
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 ## List records
@@ -283,7 +327,20 @@ deferred.addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRec
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let userId = session.userID // a Session object's Id.
+
+var message = StorageListMessage(bucket: "myapp")
+message.collection = "saves"
+message.userID = userId
+client.send(message: message).then { list in
+  for record in list {
+    NSLog("Record value '@%'", record.value)
+    NSLog("Record permissions read '@%' write '@%'",
+        record.permissionRead, record.permissionWrite)
+  }
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 ## Update records
@@ -367,7 +424,24 @@ deferred.addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let json = "{\"coins\": 100, \"gems\": 10, \"artifacts\": 0}"
+let value = json.data(using: .utf8)!
+
+let ops = [
+  StorageOp(init_: "/foo", value: value),
+  StorageOp(incr: "/foo/coins", value: 10)
+  StorageOp(incr: "/foo/gems", value: 50)
+]
+
+var message = StorageUpdateMessage()
+message.update(bucket: "myapp", collection: "wallets", key: "wallet", ops: ops)
+client.send(message: message).then { list in
+  for record in list {
+    NSLog("Stored record has version '@%'", record.version)
+  }
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 ## Remove records
@@ -409,7 +483,13 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+var message = StorageRemoveMessage()
+message.remove(bucket: "myapp", collection: "saves", key: "savegame")
+client.send(message: message).then {
+  NSLog("Removed user's record(s).")
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```
 
 You can also conditionally remove an object if the object version matches the version sent by the client.
@@ -450,5 +530,13 @@ deferred.addCallback(new Callback<Boolean, Boolean>() {
 ```
 
 ```swift fct_label="Swift"
-// Needs example.
+let version = record.version // a StorageRecordId object's version.
+
+var message = StorageRemoveMessage()
+message.remove(bucket: "myapp", collection: "saves", key: "savegame", version: version)
+client.send(message: message).then {
+  NSLog("Removed user's record(s).")
+}.catch { err in
+  NSLog("Error @% : @%", err, (err as! NakamaError).message)
+}
 ```

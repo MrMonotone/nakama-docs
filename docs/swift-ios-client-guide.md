@@ -69,6 +69,7 @@ let client : Client = Builder.defaults(serverKey: "defaultkey")
     It's good practice to cache a device identifier on iOS when it's used to authenticate because they can change with device OS updates.
 
 ```swift
+
 ```
 
 In the code above we use `AuthenticateMessage.device(id: deviceID)` but for other authentication options have a look at the [code examples](authentication.md#register-or-login).
@@ -80,6 +81,7 @@ The client uses [promise chains](#promise-chains) for an easy way to execute asy
 We can replace the callback marked in step 2 with a callback which stores the session object on iOS.
 
 ```swift
+
 ```
 
 A __full example__ class with all code above is [here](#full-example).
@@ -93,6 +95,7 @@ This could be to [add friends](social-friends.md), join [groups](social-groups-c
 The server also provides a [storage engine](storage-collections.md) to keep preferences and other records owned by users. We'll use storage to introduce how messages are sent.
 
 ```swift
+
 ```
 
 Have a look at other sections of documentation for more code examples.
@@ -131,6 +134,7 @@ A deferred object is created when messages are sent and can attach callbacks and
 You can chain callbacks because each callback returns a `Promise<T>`. Each method on the `Client` returns a `Promise<T>` so you can chain calls with `.then { }`.
 
 ```swift
+
 ```
 
 ## Logs and errors
@@ -143,9 +147,10 @@ let client : Client = new Builder("defaultkey")
     .build();
 ```
 
-Every error in the Java client implements the `"NakamaError"` class. It contains details on the source and content of an error:
+Every error in the Swift client implements the `"NakamaError"` class. It contains details on the source and content of an error:
 
 ```swift
+
 ```
 
 ## Full example
